@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using System.Text;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using NotificationBot.Models.Enums;
 
@@ -10,7 +11,8 @@ namespace NotificationBot.Commands
         public async Task FetchCommand(CommandContext context)
         {
             var result = Utility.GetResult($"https://statsapi.web.nhl.com/api/v1/schedule?teamId=12&date={DateTime.Today:yyyy-MM-dd}");
-
+            var builder = new StringBuilder();
+            
             switch (result.Result.Status)
             {
                 case GameStatus.Away:
@@ -21,22 +23,24 @@ namespace NotificationBot.Commands
                     await context.RespondAsync("Hurricanes are not playing today");
                     break;
                 case GameStatus.Pending:
-                    await context.RespondAsync("The game has not yet finished");
-                    await context.RespondAsync($"Hurricanes: {result.Result.HomeScore}");
-                    await context.RespondAsync($"{result.Result.Opponent}: {result.Result.AwayScore}");
+                    builder.AppendLine("The game has not yet finished");
+                    builder.AppendLine($"Hurricanes: {result.Result.HomeScore}");
+                    builder.AppendLine($"{result.Result.Opponent}: {result.Result.AwayScore}");
+                    await context.RespondAsync(builder.ToString());
                     break;
                 case GameStatus.Finished:
-                    await context.RespondAsync("The game has finished");
-                    await context.RespondAsync($"Hurricanes: {result.Result.HomeScore}");
-                    await context.RespondAsync($"{result.Result.Opponent}: {result.Result.AwayScore}");
+                    builder.AppendLine("The game has finished");
+                    builder.AppendLine($"Hurricanes: {result.Result.HomeScore}");
+                    builder.AppendLine($"{result.Result.Opponent}: {result.Result.AwayScore}");
                     if (result.Result.HomeScore > result.Result.AwayScore)
                     {
-                        await context.RespondAsync("Have you gotten your free sandwich?");
+                        builder.AppendLine("Have you gotten your free sandwich?");
                     }
                     else
                     {
-                        await context.RespondAsync("No sandwiches unfortunately");
+                        builder.AppendLine("No sandwiches unfortunately");
                     }
+                    await context.RespondAsync(builder.ToString());
                     break;
             }
         }
