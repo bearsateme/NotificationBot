@@ -1,5 +1,6 @@
 ﻿.env
 obj/
 bin/
-appsettings.json
+appsettings.Development.json
 .idea/
+NotificationBot/appsettings.Development.json
