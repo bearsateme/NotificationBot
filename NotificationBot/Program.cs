@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using Microsoft.Extensions.Configuration;
 using NotificationBot.Commands;
 using NotificationBot.Models.Enums;
@@ -23,9 +24,30 @@ namespace NotificationBot
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
             });
-
-            var generalChannel = await discord.GetChannelAsync(ulong.Parse(config["Channel_Id"]));
             
+            int numguilds = discord.Guilds.Count;
+            
+            int numchannels = 0;
+                        
+            //DiscordGuild[] ArrayGuilds;
+            DiscordChannel[] ArrayChannels;
+
+            var guilds = discord.Guilds.Values;
+            var generalChannels = new List<ulong>();
+
+            foreach (var guild in guilds)
+            {
+                var channels = guild.Channels;
+
+                foreach (var channel in channels)
+                {
+                    if (channel.Value.Name == "general")
+                    {
+                        generalChannels.Add(channel.Key);
+                    }
+                }
+            }
+
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = new[] { "!" },
@@ -54,12 +76,22 @@ namespace NotificationBot
 
                 if (result.HomeScore > result.AwayScore)
                 {
-                    await generalChannel.SendMessageAsync("get your shit");
+                    foreach (var channel in generalChannels)
+                    {
+                        var generalChannel = await discord.GetChannelAsync(channel);
+                        await generalChannel.SendMessageAsync("get your shit");    
+                    }
+                    
                     await Task.Delay(86400000);
                     continue;
                 }
 
-                await generalChannel.SendMessageAsync("fuck we lost at home");
+                foreach (var channel in generalChannels)
+                {
+                    var generalChannel = await discord.GetChannelAsync(channel);
+                    await generalChannel.SendMessageAsync("get your shit");    
+                }
+                
                 await Task.Delay(86400000);
             }
         }
