@@ -3,10 +3,10 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["NotificationBot/NotificationBot.csproj", "NotificationBot/"]
-RUN dotnet restore "NotificationBot/NotificationBot.csproj"
+COPY ["NotificationBot.csproj", ""]
+RUN dotnet restore "NotificationBot.csproj"
 COPY . .
-WORKDIR "/src/NotificationBot"
+WORKDIR "/src"
 RUN dotnet build "NotificationBot.csproj" -c Release -o /app/build
 
 FROM build AS publish
