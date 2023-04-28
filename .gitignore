@@ -4,3 +4,4 @@ bin/
 appsettings.Development.json
 .idea/
 NotificationBot/appsettings.Development.json
+docker-compose.yml
