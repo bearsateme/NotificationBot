@@ -10,9 +10,14 @@ namespace NotificationBot.Commands
         [Command("status")]
         public async Task FetchCommand(CommandContext context)
         {
-            var result = await Utility.GetResult($"https://statsapi.web.nhl.com/api/v1/schedule?teamId=12&date={DateTime.Today:yyyy-MM-dd}");
-            var builder = new StringBuilder();
+            var timeUtc = DateTime.UtcNow;
+            var easternZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+            var easternTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, easternZone);
             
+            var path = $"https://statsapi.web.nhl.com/api/v1/schedule?teamId=12&date={easternTime:yyyy-MM-dd}";
+            var result = await Utility.GetResult(path);
+            var builder = new StringBuilder();
+
             switch (result.Status)
             {
                 case GameStatus.Away:

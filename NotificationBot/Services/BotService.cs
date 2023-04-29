@@ -1,7 +1,9 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NotificationBot.Commands;
 using NotificationBot.Models.Enums;
 
@@ -11,16 +13,20 @@ namespace NotificationBot.Services
     {  
         private readonly IHostApplicationLifetime _applicationLifetime;
         private readonly DiscordShardedClient _shards;
+        private readonly ServiceCollection _serviceCollection;
+        private readonly ILogger<BotService> Logger;
         
-        public BotService(IConfiguration configuration,  IHostApplicationLifetime applicationLifetime)
+        public BotService(IConfiguration configuration,  IHostApplicationLifetime applicationLifetime, ILogger<BotService> logger)
         {
             _applicationLifetime = applicationLifetime;
+            _serviceCollection = new ServiceCollection(); // Right here!
             _shards = new DiscordShardedClient(new DiscordConfiguration
             {
                 Token = configuration["Bot_Key"],
                 TokenType = TokenType.Bot,
-                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
+                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents,
             });
+            Logger = logger;
         }
         
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -60,7 +66,10 @@ namespace NotificationBot.Services
                     break;
                 }
                 
-                var result = await Utility.GetResult($"https://statsapi.web.nhl.com/api/v1/schedule?teamId=12&date={DateTime.Today:yyyy-MM-dd}");
+                var timeUtc = DateTime.UtcNow;
+                var easternZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+                var easternTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, easternZone);
+                var result = await Utility.GetResult($"https://statsapi.web.nhl.com/api/v1/schedule?teamId=12&date={easternTime:yyyy-MM-dd}");
 
                 if (result.Status is GameStatus.Away or GameStatus.None)
                 {

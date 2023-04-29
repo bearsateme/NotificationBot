@@ -12,7 +12,8 @@ public class Utility
     {
         var result = await HttpClient.GetAsync(path);
         var response = await result.Content.ReadAsStringAsync();
-
+        Console.WriteLine(path);
+        Console.WriteLine(response);
         var schedule = JsonConvert.DeserializeObject<ScheduleModel>(response);
 
 

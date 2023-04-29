@@ -11,11 +11,8 @@ namespace NotificationBot
         {
             var host = Host.CreateDefaultBuilder(args)
                 .UseConsoleLifetime()
-                //.ConfigureAppConfiguration(builder => ConfigureConfigurationBuilder(args, builder))
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<BotService>();
-                    
                     IConfiguration config = new ConfigurationBuilder()
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
@@ -25,9 +22,10 @@ namespace NotificationBot
                         .Build();
                     
                     services.AddSingleton(config);
+                    services.AddHostedService<BotService>();
                 })
                 .Build();
-
+            
             await host.RunAsync();
         }
     }
