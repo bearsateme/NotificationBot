@@ -1,7 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NotificationBot.Commands;
@@ -12,52 +11,34 @@ namespace NotificationBot.Services
     public class BotService : IHostedService
     {  
         private readonly IHostApplicationLifetime _applicationLifetime;
-        private readonly DiscordShardedClient _shards;
-        private readonly ServiceCollection _serviceCollection;
+        private readonly DiscordClient _discord;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<BotService> Logger;
         
         public BotService(IConfiguration configuration,  IHostApplicationLifetime applicationLifetime, ILogger<BotService> logger)
         {
             _applicationLifetime = applicationLifetime;
-            _serviceCollection = new ServiceCollection(); // Right here!
-            _shards = new DiscordShardedClient(new DiscordConfiguration
+            _configuration = configuration;
+            _discord = new DiscordClient(new DiscordConfiguration
             {
                 Token = configuration["Bot_Key"],
                 TokenType = TokenType.Bot,
-                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents,
+                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents | DiscordIntents.Guilds
             });
+          
             Logger = logger;
         }
         
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var commands = await _shards.UseCommandsNextAsync(new CommandsNextConfiguration
+            var commands = _discord.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = new[] { "!" },
             });
             
             commands.RegisterCommands<FetchCommandModule>();
 
-            var generalChannels = new List<ulong>();
-            foreach (var shardClient in _shards.ShardClients)
-            {
-                var discord = shardClient.Value;
-
-                foreach (var guild in discord.Guilds)
-                {
-                    var channels = guild.Value.Channels;
-
-                    foreach (var channel in channels)
-                    {
-                        if (channel.Value.Name == "general")
-                        {
-                            generalChannels.Add(channel.Key);
-                        }
-                    }
-                }
-
-                await discord.ConnectAsync();
-            }
+            await _discord.ConnectAsync();
 
             while (true)
             {
@@ -85,36 +66,24 @@ namespace NotificationBot.Services
 
                 if (result.HomeScore > result.AwayScore)
                 {
-                    foreach (var channel in generalChannels)
-                    {
-                        foreach (var shardClient in _shards.ShardClients)
-                        {
-                            var generalChannel = await shardClient.Value.GetChannelAsync(channel);
-                            await generalChannel.SendMessageAsync("get your shit");    
-                        }
-                    }
+                    var generalChannel = await _discord.GetChannelAsync(ulong.Parse(_configuration["Channel_Id"]));
+                    await generalChannel.SendMessageAsync("get your shit");    
                     await Task.Delay(86400000, cancellationToken);
                     continue;
                 }
-
-                foreach (var channel in generalChannels)
+                else
                 {
-                    foreach (var shardClient in _shards.ShardClients)
-                    {
-                        var generalChannel = await shardClient.Value.GetChannelAsync(channel);
-                        await generalChannel.SendMessageAsync("get your shit");    
-                    }
+                    var generalChannel = await _discord.GetChannelAsync(ulong.Parse(_configuration["Channel_Id"]));
+                    await generalChannel.SendMessageAsync("we lost");    
+                    await Task.Delay(86400000, cancellationToken);
+                    continue;
                 }
-                await Task.Delay(86400000, cancellationToken);
             }
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            foreach (var shardClient in _shards.ShardClients)
-            {
-                await shardClient.Value.DisconnectAsync();
-            }
+            await _discord.DisconnectAsync();
         }
     }
 }
