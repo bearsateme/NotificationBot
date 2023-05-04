@@ -7,7 +7,20 @@ namespace NotificationBot;
 public class Utility
 {
     private static HttpClient HttpClient { get; set; } = new HttpClient();
-    
+
+    public static async Task<LiveGameInfo> GetGameInfo(string path)
+    {
+        var result = await HttpClient.GetAsync(path);
+        var response = await result.Content.ReadAsStringAsync();
+        
+        var schedule = JsonConvert.DeserializeObject<LiveGameModel>(response);
+
+        return new LiveGameInfo()
+        {
+            CurrentPeriod = schedule.GameData.Linescore.CurrentPeriod,
+            TimeLeft = schedule.GameData.Linescore.CurrentPeriodTimeRemaining
+        };
+    }
     public static async Task<Result> GetResult(string path)
     {
         var result = await HttpClient.GetAsync(path);
@@ -15,7 +28,6 @@ public class Utility
         Console.WriteLine(path);
         Console.WriteLine(response);
         var schedule = JsonConvert.DeserializeObject<ScheduleModel>(response);
-
 
         if (schedule is not { Dates.Count: > 0 })
         {
@@ -52,12 +64,14 @@ public class Utility
                     Opponent = game.Teams.Away.Team.Name
                 };
             case "In Progress":
+            case "In Progress - Critical":
                 return new Result()
                 {
                     Status = GameStatus.Pending,
                     Opponent = game.Teams.Away.Team.Name,
                     AwayScore = game.Teams.Away.Score,
-                    HomeScore = game.Teams.Home.Score
+                    HomeScore = game.Teams.Home.Score,
+                    Link = game.Link
                 };
             case "Final":
                 return new Result()

@@ -31,6 +31,13 @@ namespace NotificationBot.Commands
                     builder.AppendLine("The game has not yet finished");
                     builder.AppendLine($"Hurricanes: {result.HomeScore}");
                     builder.AppendLine($"{result.Opponent}: {result.AwayScore}");
+
+                    var gamePath = $"https://statsapi.web.nhl.com{result.Link}";
+                    var liveInfo = await Utility.GetGameInfo(gamePath);
+
+                    builder.AppendLine($"Period: {liveInfo.CurrentPeriod}");
+                    builder.AppendLine($"Time Left: {liveInfo.TimeLeft}");
+                    
                     await context.RespondAsync(builder.ToString());
                     break;
                 case GameStatus.Finished:
@@ -48,6 +55,8 @@ namespace NotificationBot.Commands
                     await context.RespondAsync(builder.ToString());
                     break;
             }
+            
+            
         }
     
     }

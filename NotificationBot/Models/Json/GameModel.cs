@@ -4,5 +4,6 @@
     {
         public StatusModel Status { get; set; }   
         public TeamsModel Teams { get; set; }
+        public string Link { get; set; }
     }
 }
