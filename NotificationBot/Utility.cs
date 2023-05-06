@@ -17,8 +17,8 @@ public class Utility
 
         return new LiveGameInfo()
         {
-            CurrentPeriod = schedule.GameData.Linescore.CurrentPeriod,
-            TimeLeft = schedule.GameData.Linescore.CurrentPeriodTimeRemaining
+            CurrentPeriod = schedule.LiveData.Linescore.CurrentPeriod,
+            TimeLeft = schedule.LiveData.Linescore.CurrentPeriodTimeRemaining
         };
     }
     public static async Task<Result> GetResult(string path)

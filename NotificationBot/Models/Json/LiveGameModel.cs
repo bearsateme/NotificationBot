@@ -2,6 +2,6 @@
 {
     public class LiveGameModel
     {
-        public GameDataModel GameData { get; set; }
+        public LiveDataModel LiveData { get; set; }
     }
 }

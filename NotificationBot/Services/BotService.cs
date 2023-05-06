@@ -31,15 +31,35 @@ namespace NotificationBot.Services
         
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+
+            // int numchannels = 0;
+
+            //DiscordGuild[] ArrayGuilds;
+
+            // var guilds = _discord.Guilds.Values;
+            // var generalChannels = new List<ulong>();
+            //
+            // foreach (var guild in guilds)
+            // {
+            //     var channels = guild.Channels;
+            //
+            //     foreach (var channel in channels)
+            //     {
+            //         if (channel.Value.Name == "general")
+            //         {
+            //             generalChannels.Add(channel.Key);
+            //         }
+            //     }
+            // }
+
             var commands = _discord.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = new[] { "!" },
             });
-            
+
             commands.RegisterCommands<FetchCommandModule>();
 
             await _discord.ConnectAsync();
-
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested)

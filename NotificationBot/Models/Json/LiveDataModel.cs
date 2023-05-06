@@ -1,6 +1,6 @@
 ﻿namespace NotificationBot.Models
 {
-    public class GameDataModel
+    public class LiveDataModel
     {
         public LineScoreModel Linescore { get; set; }
     }
