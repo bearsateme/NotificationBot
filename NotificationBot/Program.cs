@@ -1,32 +1,21 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using NotificationBot.Services;
+﻿using NotificationBot.Services;
 
-namespace NotificationBot
-{
-    class Program
-    {
-        static async Task Main(string[] args)
-        {
-            var host = Host.CreateDefaultBuilder(args)
-                .UseConsoleLifetime()
-                .ConfigureServices((hostContext, services) =>
-                {
-                    IConfiguration config = new ConfigurationBuilder()
-                        .AddCommandLine(args)
-                        .SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json", optional: false)
-                        .AddJsonFile($"appsettings.Development.json", optional: true)
-			.AddEnvironmentVariables()
-                        .Build();
-                    
-                    services.AddSingleton(config);
-                    services.AddHostedService<BotService>();
-                })
-                .Build();
-            
-            await host.RunAsync();
-        }
-    }
-}
+var builder = WebApplication.CreateBuilder(args);
+
+IConfiguration config = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false)
+    .AddJsonFile("appsettings.Development.json", optional: true)
+    .AddEnvironmentVariables()
+    .Build();
+
+builder.Services.AddSingleton(config);
+builder.Services.AddControllers();
+builder.Services.AddHostedService<BotService>();
+builder.Services.AddMvc();
+
+var app = builder.Build();
+
+app.MapControllers();
+
+app.Run();
