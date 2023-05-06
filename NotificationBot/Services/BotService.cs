@@ -31,26 +31,27 @@ namespace NotificationBot.Services
         
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            List<ulong> generalChannels= new List<ulong>();
+            await _discord.ConnectAsync();
 
-            // int numchannels = 0;
+            _discord.GuildDownloadCompleted += (sender, args) =>
+            {
+                var guilds = _discord.Guilds.Values;
+                foreach (var guild in guilds)
+                {
+                    var channels = guild.Channels;
 
-            //DiscordGuild[] ArrayGuilds;
+                    foreach (var channel in channels)
+                    {
+                        if (channel.Value.Name == "general")
+                        {
+                            generalChannels.Add(channel.Key);
+                        }
+                    }
+                }
 
-            // var guilds = _discord.Guilds.Values;
-            // var generalChannels = new List<ulong>();
-            //
-            // foreach (var guild in guilds)
-            // {
-            //     var channels = guild.Channels;
-            //
-            //     foreach (var channel in channels)
-            //     {
-            //         if (channel.Value.Name == "general")
-            //         {
-            //             generalChannels.Add(channel.Key);
-            //         }
-            //     }
-            // }
+                return Task.CompletedTask;
+            };
 
             var commands = _discord.UseCommandsNext(new CommandsNextConfiguration
             {
@@ -59,7 +60,6 @@ namespace NotificationBot.Services
 
             commands.RegisterCommands<FetchCommandModule>();
 
-            await _discord.ConnectAsync();
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -86,17 +86,22 @@ namespace NotificationBot.Services
 
                 if (result.HomeScore > result.AwayScore)
                 {
-                    var generalChannel = await _discord.GetChannelAsync(ulong.Parse(_configuration["Channel_Id"]));
-                    await generalChannel.SendMessageAsync("get your shit");    
+                    foreach (var generalChannel in generalChannels)
+                    {
+                        var channel = await _discord.GetChannelAsync(generalChannel);
+                        await channel.SendMessageAsync("get your shit");    
+                    }
+
                     await Task.Delay(86400000, cancellationToken);
-                    continue;
                 }
                 else
                 {
-                    var generalChannel = await _discord.GetChannelAsync(ulong.Parse(_configuration["Channel_Id"]));
-                    await generalChannel.SendMessageAsync("we lost");    
+                    foreach (var generalChannel in generalChannels)
+                    {
+                        var channel = await _discord.GetChannelAsync(generalChannel);
+                        await channel.SendMessageAsync("we lost");    
+                    }
                     await Task.Delay(86400000, cancellationToken);
-                    continue;
                 }
             }
         }
