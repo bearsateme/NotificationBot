@@ -1,0 +1,9 @@
+<script>
+    function addDiscordBot() {
+        fetch('/discord')
+        .then(r => r.text())
+        .then(url => window.open(url, '_blank'))
+    }
+</script>
+<h2>Who Gives a Cluck? We do!</h2>
+<button onclick="addDiscordBot()">Click to add the bot to your discord server</button>

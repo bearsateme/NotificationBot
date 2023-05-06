@@ -8,7 +8,7 @@ using NotificationBot.Models.Enums;
 
 namespace NotificationBot.Services
 {
-    public class BotService : IHostedService
+    public class BotService : BackgroundService
     {  
         private readonly IHostApplicationLifetime _applicationLifetime;
         private readonly DiscordClient _discord;
@@ -29,7 +29,7 @@ namespace NotificationBot.Services
             Logger = logger;
         }
         
-        public async Task StartAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             List<ulong> generalChannels= new List<ulong>();
             await _discord.ConnectAsync();
