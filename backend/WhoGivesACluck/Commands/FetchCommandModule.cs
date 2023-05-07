@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using WhoGivesACluck.Models.Enums;
+using Models.Enums;
 
 namespace WhoGivesACluck.Commands
 {

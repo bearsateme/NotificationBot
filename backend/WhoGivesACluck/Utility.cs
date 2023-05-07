@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
-using WhoGivesACluck.Models;
-using WhoGivesACluck.Models.Enums;
+﻿using Models.Enums;
+using Models.Json;
+using Models.ViewModels;
+using Newtonsoft.Json;
 
 namespace WhoGivesACluck
 {

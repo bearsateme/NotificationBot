@@ -1,21 +1,51 @@
-﻿using WhoGivesACluck.Services;
+﻿using Autofac.Extensions.DependencyInjection;
+using DataAccess.Utilities;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace WhoGivesACluck
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateLogger();
 
-IConfiguration config = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false)
-    .AddJsonFile("appsettings.Development.json", optional: true)
-    .AddEnvironmentVariables()
-    .Build();
+            try
+            {
+                var dbContext = new CluckContextFactory().CreateDbContext();
+                dbContext.Database.Migrate();
+                
+                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                
+                IConfiguration config = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+                    .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: false)
+                    .AddEnvironmentVariables()
+                    .Build();
 
-builder.Services.AddSingleton(config);
-builder.Services.AddControllers();
-builder.Services.AddHostedService<BotService>();
-builder.Services.AddMvc();
 
-var app = builder.Build();
-
-app.MapControllers();
-
-app.Run();
+                Host.CreateDefaultBuilder(args)
+                    .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                    .ConfigureWebHostDefaults(builder =>
+                    {
+                        builder.UseStartup<Startup>();
+                    })
+                    .Build()
+                    .Run();
+            }
+            catch (Exception exception)
+            {
+                Log.Fatal(exception, "Startup failed");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+    }
+}
