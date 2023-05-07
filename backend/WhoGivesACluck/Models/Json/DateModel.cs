@@ -1,4 +1,4 @@
-﻿namespace NotificationBot.Models
+﻿namespace WhoGivesACluck.Models
 {
     public class DateModel
     {

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationBot", "NotificationBot\NotificationBot.csproj", "{82EEB9CA-62BD-453E-8E22-FFA0D11B2A72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoGivesACluck", "WhoGivesACluck\WhoGivesACluck.csproj", "{82EEB9CA-62BD-453E-8E22-FFA0D11B2A72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

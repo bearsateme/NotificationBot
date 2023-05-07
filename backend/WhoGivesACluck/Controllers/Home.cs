@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace NotificationBot.Controllers;
+namespace WhoGivesACluck.Controllers;
 
 [Route("/")]
 public class HomeController: Controller {

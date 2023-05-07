@@ -3,10 +3,10 @@ using DSharpPlus.CommandsNext;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NotificationBot.Commands;
-using NotificationBot.Models.Enums;
+using WhoGivesACluck.Commands;
+using WhoGivesACluck.Models.Enums;
 
-namespace NotificationBot.Services
+namespace WhoGivesACluck.Services
 {
     public class BotService : BackgroundService
     {  

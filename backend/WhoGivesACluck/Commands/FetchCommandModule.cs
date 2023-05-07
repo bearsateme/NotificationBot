@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using NotificationBot.Models.Enums;
+using WhoGivesACluck.Models.Enums;
 
-namespace NotificationBot.Commands
+namespace WhoGivesACluck.Commands
 {
     public class FetchCommandModule : BaseCommandModule 
     {

@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
-using NotificationBot.Models;
-using NotificationBot.Models.Enums;
+using WhoGivesACluck.Models;
+using WhoGivesACluck.Models.Enums;
 
-namespace NotificationBot;
-
+namespace WhoGivesACluck
+{
 public class Utility
 {
     private static HttpClient HttpClient { get; set; } = new HttpClient();
@@ -88,4 +88,6 @@ public class Utility
                 };
         }
     }
+}    
 }
+

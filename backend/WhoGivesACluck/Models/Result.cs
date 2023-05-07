@@ -1,6 +1,6 @@
-﻿using NotificationBot.Models.Enums;
+﻿using WhoGivesACluck.Models.Enums;
 
-namespace NotificationBot.Models
+namespace WhoGivesACluck.Models
 {
     public class Result
     {
