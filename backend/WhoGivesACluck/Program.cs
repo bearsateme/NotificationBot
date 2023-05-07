@@ -1,4 +1,5 @@
-﻿using Autofac.Extensions.DependencyInjection;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using DataAccess.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Serilog;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Models.Entities;
 
 namespace DataAccess.Utilities
 {
@@ -8,6 +9,8 @@ namespace DataAccess.Utilities
         private CluckContextFactory _contextFactory;
         private SqliteConnection _connection;
 
+        public DbSet<GuildTeamEntity> GuildTeam { get; set; }
+        
         public CluckContext() { }
 
         public CluckContext(CluckContextFactory contextFactory)

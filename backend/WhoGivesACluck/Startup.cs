@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
+using BusinessLogic;
 using DataAccess;
 using DataAccess.Utilities;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +37,9 @@ namespace WhoGivesACluck
         public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterModule<DataAccessModule>();
+            builder.RegisterModule<BusinessLogicModule>();
+
+            builder.RegisterType<BotService>().AsSelf().PropertiesAutowired();
 
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
                 .AssignableTo<ControllerBase>()
@@ -46,6 +52,7 @@ namespace WhoGivesACluck
             services.AddSingleton(_configuration);
             services.AddControllers()
                 .AddControllersAsServices();
+            services.AddAutoMapper();
             services.AddHostedService<BotService>();
             services
                 .AddEntityFrameworkSqlite()
@@ -54,6 +61,7 @@ namespace WhoGivesACluck
                     opt.UseSqlite(_configuration.GetConnectionString("Default"));
                 });
             services.AddMvc();
+            
         }
     }
 }

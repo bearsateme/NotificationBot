@@ -8,8 +8,9 @@ namespace WhoGivesACluck.Services
     public class BotService : BackgroundService
     {  
         private readonly DiscordClient _discord;
+        private readonly IServiceProvider _serviceProvider;
         
-        public BotService(IConfiguration configuration)
+        public BotService(IConfiguration configuration, IServiceProvider serviceProvider)
         {
             _discord = new DiscordClient(new DiscordConfiguration
             {
@@ -17,6 +18,7 @@ namespace WhoGivesACluck.Services
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents | DiscordIntents.Guilds
             });
+            _serviceProvider = serviceProvider;
         }
         
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -46,9 +48,11 @@ namespace WhoGivesACluck.Services
             var commands = _discord.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = new[] { "!" },
+                Services = _serviceProvider
             });
 
             commands.RegisterCommands<FetchCommandModule>();
+            commands.RegisterCommands<AdminCommandModule>();
 
             while (true)
             {
