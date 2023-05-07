@@ -21,8 +21,4 @@
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0-preview.3.23174.8" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Services\Interfaces\" />
-    </ItemGroup>
-
 </Project>

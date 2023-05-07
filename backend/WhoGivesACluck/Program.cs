@@ -1,4 +1,4 @@
-﻿using NotificationBot.Services;
+﻿using WhoGivesACluck.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

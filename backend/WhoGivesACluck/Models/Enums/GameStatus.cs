@@ -1,7 +1,7 @@
 ﻿
 using System.ComponentModel;
 
-namespace NotificationBot.Models.Enums
+namespace WhoGivesACluck.Models.Enums
 {
     public enum GameStatus
     {
