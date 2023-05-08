@@ -49,6 +49,7 @@ namespace WhoGivesACluck
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient();
             services.AddSingleton(_configuration);
             services.AddControllers()
                 .AddControllersAsServices();

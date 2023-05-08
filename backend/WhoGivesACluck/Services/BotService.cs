@@ -1,5 +1,7 @@
-﻿using DSharpPlus;
+﻿using BusinessLogic.Interfaces;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using Models;
 using Models.Enums;
 using WhoGivesACluck.Commands;
 
@@ -23,7 +25,7 @@ namespace WhoGivesACluck.Services
         
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            List<ulong> generalChannels= new List<ulong>();
+            var generalChannels= new List<ulong>();
             await _discord.ConnectAsync();
 
             _discord.GuildDownloadCompleted += (sender, args) =>
@@ -64,7 +66,7 @@ namespace WhoGivesACluck.Services
                 var timeUtc = DateTime.UtcNow;
                 var easternZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
                 var easternTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, easternZone);
-                var result = await Utility.GetResult($"https://statsapi.web.nhl.com/api/v1/schedule?teamId=12&date={easternTime:yyyy-MM-dd}");
+                var result = await Utility.GetResult($"{Endpoints.Schedule}?teamId=12&date={easternTime:yyyy-MM-dd}");
 
                 if (result.Status is GameStatus.Away or GameStatus.None)
                 {

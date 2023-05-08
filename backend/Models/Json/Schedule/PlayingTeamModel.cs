@@ -1,6 +1,6 @@
-﻿namespace Models.Json
+﻿namespace Models.Json.Schedule
 {
-    public class HomeModel
+    public class PlayingTeamModel
     {
         public int Score { get; set; }
         public TeamModel Team { get; set; }

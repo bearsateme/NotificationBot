@@ -9,6 +9,7 @@ namespace BusinessLogic
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<GuildTeamManager>().As<IGuildTeamManager>().PropertiesAutowired();
+            builder.RegisterType<UtilityManager>().As<IUtilityManager>().PropertiesAutowired();
         }   
     }
 }

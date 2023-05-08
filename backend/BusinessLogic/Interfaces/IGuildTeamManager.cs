@@ -1,7 +1,9 @@
-﻿namespace BusinessLogic.Interfaces
+﻿using Models.Json.Team;
+
+namespace BusinessLogic.Interfaces
 {
     public interface IGuildTeamManager
     {
-        Task<List<string>> GetTeams();
+        Task<TeamsBaseModel> GetTeams();
     }
 }

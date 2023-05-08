@@ -1,15 +1,23 @@
 ﻿using BusinessLogic.Interfaces;
+using Models;
+using Models.Json.Team;
+using Newtonsoft.Json;
 
 namespace BusinessLogic.Managers
 {
     public class GuildTeamManager : IGuildTeamManager
     {
-        public async Task<List<string>> GetTeams()
+        public IHttpClientFactory HttpClientFactory { get; set; }
+        
+        public async Task<TeamsBaseModel> GetTeams()
         {
-            return new List<string>()
-            {
-                "test1"
-            };
+            var httpClient = HttpClientFactory.CreateClient();
+
+            var response = await httpClient.GetAsync(Endpoints.Teams);
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<TeamsBaseModel>(result);
         }
     }
 }

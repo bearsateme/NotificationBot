@@ -1,5 +1,5 @@
 ﻿using Models.Enums;
-using Models.Json;
+using Models.Json.Schedule;
 using Models.ViewModels;
 using Newtonsoft.Json;
 
@@ -8,27 +8,14 @@ namespace WhoGivesACluck
 public class Utility
 {
     private static HttpClient HttpClient { get; set; } = new HttpClient();
-
-    public static async Task<LiveGameInfo> GetGameInfo(string path)
-    {
-        var result = await HttpClient.GetAsync(path);
-        var response = await result.Content.ReadAsStringAsync();
-        
-        var schedule = JsonConvert.DeserializeObject<LiveGameModel>(response);
-
-        return new LiveGameInfo()
-        {
-            CurrentPeriod = schedule.LiveData.Linescore.CurrentPeriod,
-            TimeLeft = schedule.LiveData.Linescore.CurrentPeriodTimeRemaining
-        };
-    }
+    
     public static async Task<Result> GetResult(string path)
     {
         var result = await HttpClient.GetAsync(path);
         var response = await result.Content.ReadAsStringAsync();
         Console.WriteLine(path);
         Console.WriteLine(response);
-        var schedule = JsonConvert.DeserializeObject<ScheduleModel>(response);
+        var schedule = JsonConvert.DeserializeObject<ScheduleBaseModel>(response);
 
         if (schedule is not { Dates.Count: > 0 })
         {

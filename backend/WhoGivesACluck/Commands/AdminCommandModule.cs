@@ -1,4 +1,5 @@
-﻿using BusinessLogic.Interfaces;
+﻿using System.Text;
+using BusinessLogic.Interfaces;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 
@@ -18,7 +19,14 @@ namespace WhoGivesACluck.Commands
         {
             var teamList = await GuildTeamManager.GetTeams();
 
-            await context.RespondAsync("DI test");
+            var builder = new StringBuilder().Append("Teams:").AppendLine();
+
+            foreach (var team in teamList.Teams)
+            {
+                builder.Append($"{team.Id}: {team.Name}").AppendLine();
+            }
+
+            await context.RespondAsync(builder.ToString());
         }
     }
 }

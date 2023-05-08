@@ -1,4 +1,4 @@
-﻿namespace Models.Json
+﻿namespace Models.Json.Schedule
 {
     public class StatusModel
     {

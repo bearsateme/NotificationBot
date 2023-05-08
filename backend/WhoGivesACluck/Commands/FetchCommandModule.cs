@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using BusinessLogic.Interfaces;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using Models.Enums;
@@ -7,15 +8,12 @@ namespace WhoGivesACluck.Commands
 {
     public class FetchCommandModule : BaseCommandModule 
     {
+        public IUtilityManager UtilityManager { get; set; }
+        
         [Command("status")]
         public async Task FetchCommand(CommandContext context)
         {
-            var timeUtc = DateTime.UtcNow;
-            var easternZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-            var easternTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, easternZone);
-            
-            var path = $"https://statsapi.web.nhl.com/api/v1/schedule?teamId=12&date={easternTime:yyyy-MM-dd}";
-            var result = await Utility.GetResult(path);
+            var result = await UtilityManager.GetResult(12);
             var builder = new StringBuilder();
 
             switch (result.Status)
@@ -33,7 +31,7 @@ namespace WhoGivesACluck.Commands
                     builder.AppendLine($"{result.Opponent}: {result.AwayScore}");
 
                     var gamePath = $"https://statsapi.web.nhl.com{result.Link}";
-                    var liveInfo = await Utility.GetGameInfo(gamePath);
+                    var liveInfo = await UtilityManager.GetGameInfo(gamePath);
 
                     builder.AppendLine($"Period: {liveInfo.CurrentPeriod}");
                     builder.AppendLine($"Time Left: {liveInfo.TimeLeft}");
@@ -55,8 +53,6 @@ namespace WhoGivesACluck.Commands
                     await context.RespondAsync(builder.ToString());
                     break;
             }
-            
-            
         }
     
     }

@@ -8,6 +8,12 @@
 
     <ItemGroup>
       <PackageReference Include="Autofac" Version="7.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0-preview.3.23174.8" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Models\Models.csproj" />
     </ItemGroup>
 
 </Project>
