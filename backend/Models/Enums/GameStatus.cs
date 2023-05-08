@@ -1,7 +1,7 @@
 ﻿
 using System.ComponentModel;
 
-namespace WhoGivesACluck.Models.Enums
+namespace Models.Enums
 {
     public enum GameStatus
     {

@@ -1,6 +1,6 @@
-﻿using WhoGivesACluck.Models.Enums;
+﻿using Models.Enums;
 
-namespace WhoGivesACluck.Models
+namespace Models.ViewModels
 {
     public class Result
     {

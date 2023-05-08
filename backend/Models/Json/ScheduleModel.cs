@@ -1,4 +1,4 @@
-﻿namespace WhoGivesACluck.Models
+﻿namespace Models.Json
 {
     public class ScheduleModel
     {

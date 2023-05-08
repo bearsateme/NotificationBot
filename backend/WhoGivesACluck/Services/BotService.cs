@@ -1,32 +1,24 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Models.Enums;
 using WhoGivesACluck.Commands;
-using WhoGivesACluck.Models.Enums;
 
 namespace WhoGivesACluck.Services
 {
     public class BotService : BackgroundService
     {  
-        private readonly IHostApplicationLifetime _applicationLifetime;
         private readonly DiscordClient _discord;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<BotService> Logger;
+        private readonly IServiceProvider _serviceProvider;
         
-        public BotService(IConfiguration configuration,  IHostApplicationLifetime applicationLifetime, ILogger<BotService> logger)
+        public BotService(IConfiguration configuration, IServiceProvider serviceProvider)
         {
-            _applicationLifetime = applicationLifetime;
-            _configuration = configuration;
             _discord = new DiscordClient(new DiscordConfiguration
             {
                 Token = configuration["Bot_Key"],
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents | DiscordIntents.Guilds
             });
-          
-            Logger = logger;
+            _serviceProvider = serviceProvider;
         }
         
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -56,9 +48,11 @@ namespace WhoGivesACluck.Services
             var commands = _discord.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = new[] { "!" },
+                Services = _serviceProvider
             });
 
             commands.RegisterCommands<FetchCommandModule>();
+            commands.RegisterCommands<AdminCommandModule>();
 
             while (true)
             {
