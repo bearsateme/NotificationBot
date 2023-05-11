@@ -2,7 +2,6 @@
 using BusinessLogic.Interfaces;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using Models.Enums;
 
 namespace WhoGivesACluck.Commands
 {
@@ -18,14 +17,14 @@ namespace WhoGivesACluck.Commands
 
             switch (result.Status)
             {
-                case GameStatus.Away:
+                case "Away game":
                     await context.RespondAsync("Hurricanes are playing away.");
                     break;
-                case GameStatus.Invalid:
-                case GameStatus.None:
+                case "No Games":
                     await context.RespondAsync("Hurricanes are not playing today");
                     break;
-                case GameStatus.Pending:
+                case "In Progress":
+                case "In Progress - Critical":
                     builder.AppendLine("The game has not yet finished");
                     builder.AppendLine($"Hurricanes: {result.HomeScore}");
                     builder.AppendLine($"{result.Opponent}: {result.AwayScore}");
@@ -38,7 +37,7 @@ namespace WhoGivesACluck.Commands
                     
                     await context.RespondAsync(builder.ToString());
                     break;
-                case GameStatus.Finished:
+                case "Final":
                     builder.AppendLine("The game has finished");
                     builder.AppendLine($"Hurricanes: {result.HomeScore}");
                     builder.AppendLine($"{result.Opponent}: {result.AwayScore}");

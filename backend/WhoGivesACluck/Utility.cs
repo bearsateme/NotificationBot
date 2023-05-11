@@ -1,5 +1,4 @@
-﻿using Models.Enums;
-using Models.Json.Schedule;
+﻿using Models.Json.Schedule;
 using Models.ViewModels;
 using Newtonsoft.Json;
 
@@ -21,7 +20,7 @@ public class Utility
         {
             return new Result()
             {
-                Status = GameStatus.None
+                Status = "No Games"
             };
         }
 
@@ -29,51 +28,52 @@ public class Utility
 
         if (game == null)
         {
-            return new Result()
-            {
-                Status = GameStatus.None
-            };
+           return new Result()
+           {
+               Status = "No Games"
+           };
         }
 
         if (game.Teams.Home.Team.Id != 12)
         {
-            return new Result()
-            {
-                Status = GameStatus.Away
-            };
+           return new Result()
+           {
+               Status = "Away game"
+           };
         }
-        
+                   
         switch (game.Status.DetailedState)
         {
-            case "Scheduled":
-                return new Result()
-                {
-                    Status = GameStatus.Pending,
-                    Opponent = game.Teams.Away.Team.Name
-                };
-            case "In Progress":
-            case "In Progress - Critical":
-                return new Result()
-                {
-                    Status = GameStatus.Pending,
-                    Opponent = game.Teams.Away.Team.Name,
-                    AwayScore = game.Teams.Away.Score,
-                    HomeScore = game.Teams.Home.Score,
-                    Link = game.Link
-                };
-            case "Final":
-                return new Result()
-                {
-                    Status = GameStatus.Finished,
-                    Opponent = game.Teams.Away.Team.Name,
-                    AwayScore = game.Teams.Away.Score,
-                    HomeScore = game.Teams.Home.Score
-                }; 
-            default:
-                return new Result()
-                {
-                    Status = GameStatus.Invalid
-                };
+           case "Scheduled":
+               return new Result()
+               {
+                   Status = game.Status.DetailedState,
+                   Opponent = game.Teams.Away.Team.Name
+               };
+           case "In Progress":
+           case "In Progress - Critical":
+               return new Result()
+               {
+                   Status = game.Status.DetailedState,
+                   Opponent = game.Teams.Away.Team.Name,
+                   AwayScore = game.Teams.Away.Score,
+                   HomeScore = game.Teams.Home.Score,
+                   Link = game.Link
+               };
+           case "Final":
+               return new Result()
+               {
+                   Status = game.Status.DetailedState,
+                   Opponent = game.Teams.Away.Team.Name,
+                   AwayScore = game.Teams.Away.Score,
+                   HomeScore = game.Teams.Home.Score
+               }; 
+           default:
+               return new Result()
+               {
+                   Status = game.Status.DetailedState,
+                   Opponent = game.Teams.Away.Team.Name
+               };
         }
     }
 }    

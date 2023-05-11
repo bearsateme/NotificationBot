@@ -1,8 +1,6 @@
-﻿using BusinessLogic.Interfaces;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using Models;
-using Models.Enums;
 using WhoGivesACluck.Commands;
 
 namespace WhoGivesACluck.Services
@@ -68,37 +66,41 @@ namespace WhoGivesACluck.Services
                 var easternTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, easternZone);
                 var result = await Utility.GetResult($"{Endpoints.Schedule}?teamId=12&date={easternTime:yyyy-MM-dd}");
 
-                if (result.Status is GameStatus.Away or GameStatus.None)
-                {
-                    await Task.Delay(86400000, cancellationToken);
-                    continue;
-                }
+                // if (result.Status is GameStatus.Away or GameStatus.None)
+                // {
+                //     await Task.Delay(86400000, cancellationToken);
+                //     continue;
+                // }
+                //
+                // if (result.Status != GameStatus.Finished)
+                // {
+                //     await Task.Delay(300000, cancellationToken);
+                //     continue;
+                // }
 
-                if (result.Status != GameStatus.Finished)
+                if (result.Status == "Finished")
                 {
-                    await Task.Delay(300000, cancellationToken);
-                    continue;
-                }
-
-                if (result.HomeScore > result.AwayScore)
-                {
-                    foreach (var generalChannel in generalChannels)
+                    if (result.HomeScore > result.AwayScore)
                     {
-                        var channel = await _discord.GetChannelAsync(generalChannel);
-                        await channel.SendMessageAsync("get your shit");    
-                    }
+                        foreach (var generalChannel in generalChannels)
+                        {
+                            var channel = await _discord.GetChannelAsync(generalChannel);
+                            await channel.SendMessageAsync("get your shit");    
+                        }
 
-                    await Task.Delay(86400000, cancellationToken);
-                }
-                else
-                {
-                    foreach (var generalChannel in generalChannels)
-                    {
-                        var channel = await _discord.GetChannelAsync(generalChannel);
-                        await channel.SendMessageAsync("we lost");    
+                        await Task.Delay(300000, cancellationToken);
                     }
-                    await Task.Delay(86400000, cancellationToken);
+                    else
+                    {
+                        foreach (var generalChannel in generalChannels)
+                        {
+                            var channel = await _discord.GetChannelAsync(generalChannel);
+                            await channel.SendMessageAsync("we lost");    
+                        }
+                        await Task.Delay(300000, cancellationToken);
+                    }
                 }
+                await Task.Delay(300000, cancellationToken);
             }
         }
 

@@ -1,6 +1,5 @@
 ﻿using BusinessLogic.Interfaces;
 using Models;
-using Models.Enums;
 using Models.Json.LiveGame;
 using Models.Json.Schedule;
 using Models.ViewModels;
@@ -42,7 +41,7 @@ namespace BusinessLogic.Managers
             {
                 return new Result()
                 {
-                    Status = GameStatus.None
+                    Status = "No Games"
                 };
             }
 
@@ -52,7 +51,7 @@ namespace BusinessLogic.Managers
             {
                 return new Result()
                 {
-                    Status = GameStatus.None
+                    Status = "No Games"
                 };
             }
 
@@ -60,7 +59,7 @@ namespace BusinessLogic.Managers
             {
                 return new Result()
                 {
-                    Status = GameStatus.Away
+                    Status = "Away game"
                 };
             }
             
@@ -69,14 +68,14 @@ namespace BusinessLogic.Managers
                 case "Scheduled":
                     return new Result()
                     {
-                        Status = GameStatus.Pending,
+                        Status = game.Status.DetailedState,
                         Opponent = game.Teams.Away.Team.Name
                     };
                 case "In Progress":
                 case "In Progress - Critical":
                     return new Result()
                     {
-                        Status = GameStatus.Pending,
+                        Status = game.Status.DetailedState,
                         Opponent = game.Teams.Away.Team.Name,
                         AwayScore = game.Teams.Away.Score,
                         HomeScore = game.Teams.Home.Score,
@@ -85,7 +84,7 @@ namespace BusinessLogic.Managers
                 case "Final":
                     return new Result()
                     {
-                        Status = GameStatus.Finished,
+                        Status = game.Status.DetailedState,
                         Opponent = game.Teams.Away.Team.Name,
                         AwayScore = game.Teams.Away.Score,
                         HomeScore = game.Teams.Home.Score
@@ -93,7 +92,8 @@ namespace BusinessLogic.Managers
                 default:
                     return new Result()
                     {
-                        Status = GameStatus.Invalid
+                        Status = game.Status.DetailedState,
+                        Opponent = game.Teams.Away.Team.Name
                     };
             }
         }   
