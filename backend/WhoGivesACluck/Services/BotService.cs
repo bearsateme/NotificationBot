@@ -78,7 +78,7 @@ namespace WhoGivesACluck.Services
                 //     continue;
                 // }
 
-                if (result.Status == "Finished")
+                if (result.Status == "Final")
                 {
                     if (result.HomeScore > result.AwayScore)
                     {
@@ -88,7 +88,7 @@ namespace WhoGivesACluck.Services
                             await channel.SendMessageAsync("get your shit");    
                         }
 
-                        await Task.Delay(300000, cancellationToken);
+                        await Task.Delay(86400000, cancellationToken);
                     }
                     else
                     {
@@ -97,7 +97,7 @@ namespace WhoGivesACluck.Services
                             var channel = await _discord.GetChannelAsync(generalChannel);
                             await channel.SendMessageAsync("we lost");    
                         }
-                        await Task.Delay(300000, cancellationToken);
+                        await Task.Delay(86400000, cancellationToken);
                     }
                 }
                 await Task.Delay(300000, cancellationToken);
