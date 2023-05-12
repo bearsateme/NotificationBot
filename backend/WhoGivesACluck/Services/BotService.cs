@@ -25,7 +25,7 @@ namespace WhoGivesACluck.Services
         {
             var generalChannels= new List<ulong>();
             await _discord.ConnectAsync();
-
+            bool downloadComplete = false;
             _discord.GuildDownloadCompleted += (sender, args) =>
             {
                 var guilds = _discord.Guilds.Values;
@@ -42,6 +42,7 @@ namespace WhoGivesACluck.Services
                     }
                 }
 
+                downloadComplete = true;
                 return Task.CompletedTask;
             };
 
@@ -56,6 +57,11 @@ namespace WhoGivesACluck.Services
 
             while (true)
             {
+                if (!downloadComplete)
+                {
+                    await Task.Delay(5000, cancellationToken);
+                    continue;
+                }
                 if (cancellationToken.IsCancellationRequested)
                 {
                     break;
